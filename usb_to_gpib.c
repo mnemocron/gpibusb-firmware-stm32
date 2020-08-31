@@ -119,46 +119,46 @@ char buf_get(char *pnt) {
 
 // Puts all the GPIB pins into their correct initial states.
 void prep_gpib_pins() {
-	output_low(TE); // Disables talking on data and handshake lines
-	output_low(PE);
+	GPIO_Output_Low(TE); // Disables talking on data and handshake lines
+	GPIO_Output_Low(PE);
     
     if (mode) {
-	    output_high(SC); // Allows transmit on REN and IFC
-	    output_low(DC); // Transmit ATN and receive SRQ
+	    GPIO_Output_High(SC); // Allows transmit on REN and IFC
+	    GPIO_Output_Low(DC); // Transmit ATN and receive SRQ
 	}
 	else {
-	    output_low(SC);
-	    output_high(DC);
+	    GPIO_Output_Low(SC);
+	    GPIO_Output_High(DC);
 	}
 
-	output_float(DIO1);
-	output_float(DIO2);
-	output_float(DIO3);
-	output_float(DIO4);
-	output_float(DIO5);
-	output_float(DIO6);
-	output_float(DIO7);
-	output_float(DIO8);
+	GPIO_Output_Float(DIO1_GPIO_Port, DIO1_Pin);
+	GPIO_Output_Float(DIO2_GPIO_Port, DIO2_Pin);
+	GPIO_Output_Float(DIO3_GPIO_Port, DIO3_Pin);
+	GPIO_Output_Float(DIO4_GPIO_Port, DIO4_Pin);
+	GPIO_Output_Float(DIO5_GPIO_Port, DIO5_Pin);
+	GPIO_Output_Float(DIO6_GPIO_Port, DIO6_Pin);
+	GPIO_Output_Float(DIO7_GPIO_Port, DIO7_Pin);
+	GPIO_Output_Float(DIO8_GPIO_Port, DIO8_Pin);
 	
 	if (mode) {
-	    output_high(ATN);
-	    output_float(EOI);
-	    output_float(DAV);
-	    output_low(NRFD);
-	    output_low(NDAC);
-	    output_high(IFC);
-	    output_float(SRQ);
-	    output_low(REN);
+	    GPIO_Output_High  (ATN_GPIO_Port, ATN_Pin);
+	    GPIO_Output_Float (EOI_GPIO_Port, EOI_Pin);
+	    GPIO_Output_Float (DAV_GPIO_Port, DAV_Pin);
+	    GPIO_Output_Low   (NRFD_GPIO_Port, NRFD_Pin);
+	    GPIO_Output_Low   (NDAC_GPIO_Port, NDAC_Pin);
+	    GPIO_Output_High  (IFC_GPIO_Port, IFC_Pin);
+	    GPIO_Output_Float (SRQ_GPIO_Port, SRQ_Pin);
+	    GPIO_Output_Low   (REN_GPIO_Port, REN_Pin);
 	}
 	else {
-	    output_float(ATN);
-	    output_float(EOI);
-	    output_float(DAV);
-	    output_float(NRFD);
-	    output_float(NDAC);
-	    output_float(IFC);
-	    output_float(SRQ);
-	    output_float(REN);
+	    GPIO_Output_Float(ATN_GPIO_Port, ATN_Pin);
+	    GPIO_Output_Float(EOI_GPIO_Port, EOI_Pin);
+	    GPIO_Output_Float(DAV_GPIO_Port, DAV_Pin);
+	    GPIO_Output_Float(NRFD_GPIO_Port, NRFD_Pin);
+	    GPIO_Output_Float(NDAC_GPIO_Port, NDAC_Pin);
+	    GPIO_Output_Float(IFC_GPIO_Port, IFC_Pin);
+	    GPIO_Output_Float(SRQ_GPIO_Port, SRQ_Pin);
+	    GPIO_Output_Float(REN_GPIO_Port, REN_Pin);
 	}
 }
 
@@ -167,7 +167,7 @@ void gpib_init() {
 	prep_gpib_pins(); // Put all the pins into high-impedance mode
 	
 	//output_low(NRFD); // ?? Needed ??
-	output_high(NDAC); // ?? Needed ??
+	GPIO_Output_High(NDAC); // ?? Needed ??
 	
 }
 
@@ -204,11 +204,11 @@ char _gpib_write(char *bytes, int length, BOOLEAN attention, BOOLEAN useEOI) {
 	char a; // Storage variable for the current character
 	int i; // Loop counter variable
 
-	output_high(PE);
+	GPIO_Output_High(PE_GPIO_Port, PE_Pin);
 	
 	if(attention) // If byte is a gpib bus command
 	{
-		output_low(ATN); // Assert the ATN line, informing all 
+		GPIO_Output_Low(ATN_GPIO_Port, ATN_Pin); // Assert the ATN line, informing all 
 		                 // this is a cmd byte.
 	}
 	
@@ -218,12 +218,12 @@ char _gpib_write(char *bytes, int length, BOOLEAN attention, BOOLEAN useEOI) {
 		                               // be sent
 	}
 	
-	output_high(TE); // Enable talking
+	GPIO_Output_High(TE_GPIO_Port, TE_Pin); // Enable talking
 	
-	output_high(EOI);
-	output_high(DAV);
-	output_float(NRFD);
-	output_float(NDAC);
+	GPIO_Output_High(EOI_GPIO_Port, EOI_Pin);
+	GPIO_Output_High(DAV_GPIO_Port, DAV_Pin);
+	GPIO_Output_Float(NRFD_GPIO_Port, NRFD_Pin);
+	GPIO_Output_Float(NDAC_GPIO_Port, NDAC_Pin);
 	
 	// Before we start transfering, we have to make sure that NRFD is high
 	// and NDAC is low
@@ -281,7 +281,7 @@ char _gpib_write(char *bytes, int length, BOOLEAN attention, BOOLEAN useEOI) {
 		a = a^0xff;
 		output_b(a);
 	
-		output_float(NRFD);
+		GPIO_Output_Float(NRFD_GPIO_Port, NRFD_Pin);
 
 		// Wait for listeners to be ready for data (NRFD should be high)
     #ifdef WITH_TIMEOUT
@@ -305,10 +305,10 @@ char _gpib_write(char *bytes, int length, BOOLEAN attention, BOOLEAN useEOI) {
     #endif
 		
 		if((i==length-1) && (useEOI)) { // If last byte in string
-			output_low(EOI); // Assert EOI
+			GPIO_Output_Low(EOI_GPIO_Port, EOI_Pin); // Assert EOI
 		}
 		
-		output_low(DAV); // Inform listeners that the data is ready to be read
+		GPIO_Output_Low(DAV_GPIO_Port, DAV_Pin); // Inform listeners that the data is ready to be read
 
 		
 		// Wait for NDAC to go high, all listeners have accepted the byte
@@ -332,33 +332,33 @@ char _gpib_write(char *bytes, int length, BOOLEAN attention, BOOLEAN useEOI) {
 		while(!(input(NDAC))){} 
     #endif
 		
-		output_high(DAV); // Byte has been accepted by all, indicate 
+		GPIO_Output_High(DAV_GPIO_Port, DAV_Pin); // Byte has been accepted by all, indicate 
 		                   // byte is no longer valid
 		
 	} // Finished outputing all bytes to listeners
 
-	output_low(TE); // Disable talking on datalines
+	GPIO_Output_Low(TE_GPIO_Port, TE_Pin); // Disable talking on datalines
 
 	// Float all data lines 
-	output_float(DIO1);
-	output_float(DIO2);
-	output_float(DIO3);
-	output_float(DIO4);
-	output_float(DIO5);
-	output_float(DIO6);
-	output_float(DIO7);
-	output_float(DIO8);
+	GPIO_Output_Float(DIO1_GPIO_Port, DIO1_Pin);
+	GPIO_Output_Float(DIO2_GPIO_Port, DIO2_Pin);
+	GPIO_Output_Float(DIO3_GPIO_Port, DIO3_Pin);
+	GPIO_Output_Float(DIO4_GPIO_Port, DIO4_Pin);
+	GPIO_Output_Float(DIO5_GPIO_Port, DIO5_Pin);
+	GPIO_Output_Float(DIO6_GPIO_Port, DIO6_Pin);
+	GPIO_Output_Float(DIO7_GPIO_Port, DIO7_Pin);
+	GPIO_Output_Float(DIO8_GPIO_Port, DIO8_Pin);
 	
 	if(attention) { // If byte was a gpib cmd byte
-		output_high(ATN); // Release ATN line
+		GPIO_Output_High(ATN_GPIO_Port, ATN_Pin); // Release ATN line
 	}
 	
-	output_float(DAV);
-	output_float(EOI);
-	output_high(NDAC);
-	output_high(NRFD);
+	GPIO_Output_Float(DAV_GPIO_Port, DAV_Pin);
+	GPIO_Output_Float(EOI_GPIO_Port, EOI_Pin);
+	GPIO_Output_High(NDAC_GPIO_Port, NDAC_Pin);
+	GPIO_Output_High(NRFD_GPIO_Port, NRFD_Pin);
 
-	output_low(PE);
+	GPIO_Output_Low(PE_GPIO_Port, PE_Pin);
 	
 	return 0;
 	

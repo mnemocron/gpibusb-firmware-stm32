@@ -1,13 +1,15 @@
 GPIBUSB Adapter Firmware
 ========================
 
-This repository contains the source and hex files for the GPIBUSB firmware.
+This repository is a fork of www.github.com/Galvant/gpibusb-pcb. It utilizes an STM32 microcontroller instead of a PIC. 
+The STM32 firmware is based on the STM32CubeMX package and HAL ecosystem.
 
-The associated PCB project can be found on GitHub at www.github.com/Galvant/gpibusb-pcb
+> This repository contains the source and hex files for the GPIBUSB firmware.
 
-Pre-assembled boards can be found at www.galvant.ca
+> The associated PCB project can be found on GitHub at www.github.com/Galvant/gpibusb-pcb
 
-Requires the CCS compiler.
+> Pre-assembled boards can be found at www.galvant.ca
+
 
 About
 -----

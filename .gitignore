@@ -1,58 +1,56 @@
-## Temporary files ##
-*~
-*.tmp
+# SW4STM32
+/Debug/*
 
-## OS generated files ##
-.DS_Store*
-desktop.ini
-Thumbs.db
+# Prerequisites
+*.d
 
-## Build directories ##
-doc/_build
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
 
-## setup.py generated files ##
-MANIFEST
+# Linker output
+*.ilk
+*.map
+*.exp
 
-# The following ignores are drawn from github@github:gitignore/Python.gitignore.
-*.py[cod]
+# Precompiled Headers
+*.gch
+*.pch
 
-# C extensions
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
 *.so
+*.so.*
+*.dylib
 
-# Packages
-*.egg
-*.egg-info
-dist
-build
-eggs
-parts
-bin
-var
-sdist
-develop-eggs
-.installed.cfg
-lib
-lib64
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
 
-# Installer logs
-pip-log.txt
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
 
-# Unit test / coverage reports
-.coverage
-.tox
-nosetests.xml
-
-#Translations
-*.mo
-
-#Mr Developer
-.mr.developer.cfg
-
-#PIC compiler files
-*.cod
-*.err
-*.esym
-*.lst
-*.sym
--d-debug.txt
-compile.sh
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+/Debug/
